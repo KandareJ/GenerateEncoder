@@ -1,0 +1,1 @@
+g++ -o main src/Model/*.cpp src/Processors/*.cpp src/Exceptions/*.cpp src/*.cpp
