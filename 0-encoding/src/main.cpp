@@ -16,7 +16,6 @@ int main() {
 
     try {
         vector<Token> tokens = tokenizer.tokenize();
-
         for (int i = 0; i < tokens.size(); i++) {
             cout << tokens.at(i).getValue() << endl;
         }

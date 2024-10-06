@@ -1,166 +1,143 @@
 #include "Tokenizer.h"
 
-bool isDigit(char character) {
-    return character >= '0' && character <= '9';
-}
-
-bool isCharacter(char character) {
-    return (character >= 'A' && character <= 'Z')
-        || (character >= 'a' && character <= 'z');
-}
-
 Tokenizer::Tokenizer(istream* input) {
     this->input = input;
+    this->state = new BaseState(this);
 }
 
 Tokenizer::~Tokenizer() {
+    delete this->state;
 }
 
 vector<Token> Tokenizer::tokenize() {
-    state = 0;
     char current;
-    index = 0;
     line = 1;
-
     while (input->get(current)) {
-        index++;
-        if (state == 0) {
-            state0(current);
-        }
-        else if (state == 1) {
-            state1(current);
-        }
-        else {
-            state2(current);
-        }
+        state->readCharacter(current);
     }
 
     return tokens;
 }
 
-void Tokenizer::state2(char current) {
-    if (current == ' ') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        state = 0;
-    }
-    else if (current == '\n') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        state = 0;
-        line++;
-    }
-    else if (current == '{') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        tokens.push_back(Token("{", OPENING_CURLY, line));
-        state = 0;
-    }
-    else if (current == '}') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        tokens.push_back(Token("}", CLOSING_CURLY, line));
-        state = 0;
-    }
-    else if (current == ';') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        tokens.push_back(Token(";", SEMI_COLON, line));
-        state = 0;
-    }
-    else if (isDigit(current)) {
-        currentToken += current;
-    }
-    else if (current == '=') {
-        tokens.push_back(Token(currentToken, INDEX, line));
-        currentToken = "";
-        tokens.push_back(Token("=", EQUALS, line));
-        state = 0;
-    }
-    else {
-        throw SyntaxError(line, current);
-    }
+void Tokenizer::changeState(TokenizerState* newState) {
+    delete state;
+    state = newState;
 }
 
-void Tokenizer::state1(char current) {
-    if (current == ' ' || current == '\n') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        state = 0;
-    }
-    
-    else if (current == '\n') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        state = 0;
-        line++;
-    }
-    else if (current == '{') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        tokens.push_back(Token("{", OPENING_CURLY, line));
-        state = 0;
-    }
-    else if (current == '}') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        tokens.push_back(Token("}", CLOSING_CURLY, line));
-        state = 0;
-    }
-    else if (current == ';') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        tokens.push_back(Token(";", SEMI_COLON, line));
-        state = 0;
-    }
-    else if (isDigit(current)) {
-        currentToken += current;
-    }
-    else if (isCharacter(current)) {
-        currentToken += current;
-    }
-    else if (current == '=') {
-        tokens.push_back(Token(currentToken, line));
-        currentToken = "";
-        tokens.push_back(Token("=", EQUALS, line));
-        state = 0;
-    }
-    else {
-        throw SyntaxError(line, current);
-    }
+void TokenizerState::changeState(TokenizerState* newState) {
+    tokenizer->changeState(newState);
 }
 
-void Tokenizer::state0(char current) {
-    if (current == ' ') {
-        // whitespace, ignore
-    }
-    else if (current == '\n') {
-        line++;
-    }
-    else if (current == '{') {
-        tokens.push_back(Token("{", OPENING_CURLY, line));
-    }
-    else if (current == '}') {
-        tokens.push_back(Token("}", CLOSING_CURLY, line));
-    }
-    else if (isDigit(current)) {
-        currentToken += current;
-        state = 2;
-    }
-    else if (isCharacter(current)) {
-        currentToken += current;
-        state = 1;
-    }
-    else if (current == '=') {
-        tokens.push_back(Token("=", EQUALS, line));
-    }
-    else if (current == ';') {
-        tokens.push_back(Token(";", SEMI_COLON, line));
-    }
-    else {
-        throw SyntaxError(line, current);
-    }
+void TokenizerState::throwError(char current) {
+    throw SyntaxError(tokenizer->line, current);
 }
 
+void TokenizerState::appendToToken(char current) {
+    tokenizer->currentToken += current;
+}
 
+void TokenizerState::pushToken() {
+    tokenizer->tokens.push_back(Token(tokenizer->currentToken, tokenizer->line));
+    tokenizer->currentToken = "";
+}
 
+void TokenizerState::appendAndPushToken(char current) {
+    appendToToken(current);
+    pushToken();
+}
+
+void TokenizerState::incrementLine() {
+    tokenizer->line++;
+}
+
+BaseState::BaseState(Tokenizer* tokenizer) {
+    this->tokenizer = tokenizer;
+}
+
+void BaseState::readCharacter(char current) {
+    switch (current) {
+        case ' ':
+            break;
+        case '\n':
+            incrementLine();
+            break;
+        case '{':
+        case '}':
+        case '=':
+        case ';':
+            appendAndPushToken(current);
+            break;
+        default:
+            if (TokenUtils::isDigit(current)) {
+                appendToToken(current);
+                changeState(new IndexState(tokenizer));
+            }
+            else if (TokenUtils::isCharacter(current)) {
+                appendToToken(current);
+                changeState(new VariableState(tokenizer));
+            }
+            else {
+                throwError(current);
+            }
+    };
+}
+
+VariableState::VariableState(Tokenizer* tokenizer) {
+    this->tokenizer = tokenizer;
+}
+
+void VariableState::readCharacter(char current) {
+    switch (current) {
+        case '\n':
+            incrementLine();
+        case ' ':
+            pushToken();
+            changeState(new BaseState(tokenizer));
+            break;
+        case '{':
+        case '}':
+        case '=':
+        case ';':
+            pushToken();
+            appendAndPushToken(current);
+            changeState(new BaseState(tokenizer));
+            break;
+        default:
+            if (TokenUtils::isDigit(current) || TokenUtils::isCharacter(current)) {
+                appendToToken(current);
+            }
+            else {
+                throwError(current);
+            }
+    };
+}
+
+IndexState::IndexState(Tokenizer* tokenizer) {
+    this->tokenizer = tokenizer;
+}
+
+void IndexState::readCharacter(char current) {
+    switch (current) {
+        case '\n':
+            incrementLine();
+        case ' ':
+            pushToken();
+            changeState(new BaseState(tokenizer));
+            break;
+        case '{':
+        case '}':
+        case '=':
+        case ';':
+            pushToken();
+            appendAndPushToken(current);
+            changeState(new BaseState(tokenizer));
+            break;
+        default:
+            if (TokenUtils::isDigit(current)) {
+                appendToToken(current);
+            }
+            else {
+                throwError(current);
+            }
+    };
+}

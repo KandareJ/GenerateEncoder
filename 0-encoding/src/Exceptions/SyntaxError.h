@@ -3,14 +3,11 @@
 #include <string>
 #include <sstream>
 
+#include "Error.h"
+
 using namespace std;
 
-class SyntaxError {
+class SyntaxError : public Error {
     public:
         SyntaxError(int line, char character);
-        ~SyntaxError();
-        string getMessage();
-    private:
-        int line;
-        char character;
 };
