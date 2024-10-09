@@ -16,6 +16,10 @@ string Message::toString() {
     return os.str();
 }
 
+string Message::getName() {
+    return name;
+}
+
 MessageBuilder::MessageBuilder() {
     this->clear();
 }
@@ -45,18 +49,22 @@ Message MessageBuilder::build() {
     unordered_set<string> names;
 
     for (int i = 0; i < fields.size(); i++) {
-        if (indexes.find(fields.at(i).getIndex()) != indexes.end()) {
+        if (indexes.find(fields.at(i).getIndex()) == indexes.end()) {
             indexes.insert(fields.at(i).getIndex());
         }
         else {
-            throw MessageBuilderError(name, "Duplicate index " + fields.at(i).getIndex());
+            ostringstream os;
+            os << "Duplicate index " << fields.at(i).getIndex();
+            throw MessageBuilderError(name, os.str());
         }
 
-        if (names.find(fields.at(i).getName()) != names.end()) {
+        if (names.find(fields.at(i).getName()) == names.end()) {
             names.insert(fields.at(i).getName());
         }
         else {
-            throw MessageBuilderError(name, "Duplicate name " + fields.at(i).getName());
+            ostringstream os;
+            os << "Duplicate name " << fields.at(i).getName();
+            throw MessageBuilderError(name, os.str());
         }
     }
 

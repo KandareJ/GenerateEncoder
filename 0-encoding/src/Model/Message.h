@@ -10,6 +10,7 @@
 class Message {
     public:
         string toString();
+        string getName();
     private:
         friend class MessageBuilder;
         Message(vector<MessageField> fields, string name);

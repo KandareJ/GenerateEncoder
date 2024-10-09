@@ -6,3 +6,7 @@ ParseError::ParseError(Token token) {
     os << "\" on line " << token.getLine();
     this->setMessage(os.str());
 }
+
+ParseError::ParseError(string message) {
+    this->setMessage("Parse Error: " + message);
+}

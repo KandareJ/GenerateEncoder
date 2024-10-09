@@ -8,4 +8,5 @@
 class ParseError : public Error {
     public:
         ParseError(Token token);
+        ParseError(string message);
 };
