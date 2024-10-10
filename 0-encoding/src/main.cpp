@@ -14,9 +14,18 @@
 
 using namespace std;
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc != 3) {
+        cout << "Error: expected 2 arguments, got " << argc - 1 << endl;
+        cout << "Usage: EncodeGen <input file> <output director>" << endl;
+        return -1;
+    }
+
+    string inputPath = string(argv[1]);
+    string outputPath = string(argv[2]);
+
     ifstream* file = new ifstream();
-    file->open("example.msg");
+    file->open(inputPath);
     Tokenizer tokenizer = Tokenizer(file);
     Parser parser = Parser();
 
