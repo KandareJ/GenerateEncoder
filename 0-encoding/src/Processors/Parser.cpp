@@ -161,9 +161,13 @@ ParserIndexState::ParserIndexState(Parser* parser) {
 
 void ParserIndexState::handleToken(Token current) {
     if (current.getType() == TOKEN_TYPE_SEMI_COLON) {
-        getMessageBuilder()->addField(getFieldBuilder()->build());
-        getFieldBuilder()->clear();
-        changeState(new ParserEndFieldState(parser));
+        try {
+            getMessageBuilder()->addField(getFieldBuilder()->build());
+            getFieldBuilder()->clear();
+            changeState(new ParserEndFieldState(parser));
+        } catch (MessageFieldBuilderError e) {
+            throw ParseError(e.getMessage());
+        }
     }
     else {
         throw ParseError(current);
@@ -180,9 +184,13 @@ void ParserEndFieldState::handleToken(Token current) {
         changeState(new ParserTypeState(parser));
     }
     else if (current.getType() == TOKEN_TYPE_CLOSING_CURLY) {
-        addMessage(getMessageBuilder()->build());
-        getMessageBuilder()->clear();
-        changeState(new ParserBaseState(parser));
+        try {
+            addMessage(getMessageBuilder()->build());
+            getMessageBuilder()->clear();
+            changeState(new ParserBaseState(parser));
+        } catch (MessageBuilderError e) {
+            throw ParseError(e.getMessage());
+        }
     }
     else {
         throw ParseError(current);

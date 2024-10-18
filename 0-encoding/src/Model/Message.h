@@ -11,6 +11,7 @@ class Message {
     public:
         string toString();
         string getName();
+        vector<MessageField> getFields();
     private:
         friend class MessageBuilder;
         Message(vector<MessageField> fields, string name);

@@ -20,6 +20,10 @@ string Message::getName() {
     return name;
 }
 
+vector<MessageField> Message::getFields() {
+    return fields;
+}
+
 MessageBuilder::MessageBuilder() {
     this->clear();
 }

@@ -2,16 +2,16 @@
 
 MessageFieldBuilderError::MessageFieldBuilderError(int index, string name) {
     ostringstream os;
-    os << "MessageFieldBuilderError: ";
-
+    os << "Unable to set field " << name << ": ";
+    
     if (index <= 0) {
-        os << "invalid index " << index;
+        os << "Invalid index " << index;
     }
     else if (name == "") {
-        os << "invalid name " << name;
+        os << "Invalid name " << name;
     }
     else {
-        os << "type not set";
+        os << "Type not set";
     }
 
     this->setMessage(os.str());
@@ -19,10 +19,10 @@ MessageFieldBuilderError::MessageFieldBuilderError(int index, string name) {
 
 MessageBuilderError::MessageBuilderError(string name, string message) {
     ostringstream os;
-    os << "MessageBuidlerError for message " << name << ": " << message;
+    os << "Unable to build message " << name << ": " << message;
     this->setMessage(os.str());
 }
 
 MessageBuilderError::MessageBuilderError() {
-    setMessage("MessageBuilderError: Missing name");
+    setMessage("Attempted to build a message without a name set");
 };
