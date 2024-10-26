@@ -1,19 +1,25 @@
 #include "Tokenizer.h"
 
-Tokenizer::Tokenizer(istream* input) {
-    this->input = input;
-    this->state = new BaseState(this);
+Tokenizer::Tokenizer() {
+    reset();
 }
 
 Tokenizer::~Tokenizer() {
     delete this->state;
 }
 
-vector<Token> Tokenizer::tokenize() {
-    char current;
+void Tokenizer::reset() {
     line = 1;
-    while (input->get(current)) {
-        state->readCharacter(current);
+    tokens = vector<Token>();
+    currentToken = "";
+    this->state = new BaseState(this);
+}
+
+vector<Token> Tokenizer::tokenize(string input) {
+    reset();
+
+    for (int i = 0; i < input.length(); i++) {
+        state->readCharacter(input.at(i));
     }
 
     return tokens;

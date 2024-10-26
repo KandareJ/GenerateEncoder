@@ -98,7 +98,49 @@ ParserOpenMessageState::ParserOpenMessageState(Parser* parser) {
 }
 
 void ParserOpenMessageState::handleToken(Token current) {
-    if (current.getType() == TOKEN_TYPE_INT32 || current.getType() == TOKEN_TYPE_STRING) {
+    if (current.getType() == TOKEN_TYPE_INT32
+        || current.getType() == TOKEN_TYPE_STRING
+        || current.getType() == TOKEN_TYPE_UINT32
+        || current.getType() == TOKEN_TYPE_DOUBLE
+        || current.getType() == TOKEN_TYPE_BYTES
+        || current.getType() == TOKEN_TYPE_UINT64
+        || current.getType() == TOKEN_TYPE_INT64
+        || current.getType() == TOKEN_TYPE_BOOL
+    ) {
+        getFieldBuilder()->setTypeFromToken(current.getType());
+        changeState(new ParserTypeState(parser));
+    }
+    else if (current.getType() == TOKEN_TYPE_CLOSING_CURLY) {
+        try {
+            addMessage(getMessageBuilder()->build());
+            getMessageBuilder()->clear();
+            changeState(new ParserBaseState(parser));
+        } catch (MessageBuilderError e) {
+            throw ParseError(e.getMessage());
+        }
+    }
+    else if (current.getType() == TOKEN_TYPE_LIST) {
+        getFieldBuilder()->setIsList(true);
+    }
+    else {
+        throw ParseError(current);
+    }
+}
+
+ParserListState::ParserListState(Parser* parser) {
+    this->parser = parser;
+}
+
+void ParserListState::handleToken(Token current) {
+    if (current.getType() == TOKEN_TYPE_INT32
+        || current.getType() == TOKEN_TYPE_STRING
+        || current.getType() == TOKEN_TYPE_UINT32
+        || current.getType() == TOKEN_TYPE_DOUBLE
+        || current.getType() == TOKEN_TYPE_BYTES
+        || current.getType() == TOKEN_TYPE_UINT64
+        || current.getType() == TOKEN_TYPE_INT64
+        || current.getType() == TOKEN_TYPE_BOOL
+    ) {
         getFieldBuilder()->setTypeFromToken(current.getType());
         changeState(new ParserTypeState(parser));
     }
@@ -164,7 +206,7 @@ void ParserIndexState::handleToken(Token current) {
         try {
             getMessageBuilder()->addField(getFieldBuilder()->build());
             getFieldBuilder()->clear();
-            changeState(new ParserEndFieldState(parser));
+            changeState(new ParserOpenMessageState(parser));
         } catch (MessageFieldBuilderError e) {
             throw ParseError(e.getMessage());
         }
@@ -174,25 +216,3 @@ void ParserIndexState::handleToken(Token current) {
     }
 }
 
-ParserEndFieldState::ParserEndFieldState(Parser* parser) {
-    this->parser = parser;
-}
-
-void ParserEndFieldState::handleToken(Token current) {
-    if (current.getType() == TOKEN_TYPE_INT32 || current.getType() == TOKEN_TYPE_STRING) {
-        getFieldBuilder()->setTypeFromToken(current.getType());
-        changeState(new ParserTypeState(parser));
-    }
-    else if (current.getType() == TOKEN_TYPE_CLOSING_CURLY) {
-        try {
-            addMessage(getMessageBuilder()->build());
-            getMessageBuilder()->clear();
-            changeState(new ParserBaseState(parser));
-        } catch (MessageBuilderError e) {
-            throw ParseError(e.getMessage());
-        }
-    }
-    else {
-        throw ParseError(current);
-    }
-}

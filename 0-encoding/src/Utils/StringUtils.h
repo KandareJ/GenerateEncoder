@@ -2,9 +2,8 @@
 
 #include <string>
 
-using namespace std;
-
 class StringUtils {
     public:
-        static string capitalize(string str);
+        static std::string capitalize(std::string str);
+        static std::string createPath(std::string path, std::string name);
 };

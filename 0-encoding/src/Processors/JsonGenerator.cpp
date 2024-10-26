@@ -1,140 +1,12 @@
-#include "Temp.h"
+#include "JsonGenerator.h"
 
-unordered_map<FieldType, string> Temp::typeMap = {
-        {FIELD_TYPE_STRING, "string"},
-        {FIELD_TYPE_INT32, "int"},
-    };
-
-string Temp::generateHeader(Message message) {
+string JsonGenerator::getIncludeHeaders() {
     ostringstream os;
-
-    os << "#pragma once" << endl << endl;
-    os << "#include <sstream>" << endl;
-    os << "#include <string>" << endl << endl;
-    os << "#include \"JsonUtils.h\"" << endl << endl;
-    os << "using namespace std;" << endl << endl;
-    os << generateClassHeader(message) << endl;
-    os << generateClassBuilderHeader(message) << endl;
-    
-
+    os << "#include \"JsonUtils.h\"" << endl;
     return os.str();
 }
 
-string Temp::generateClassHeader(Message message) {
-    ostringstream os;
-
-    os << "class " << StringUtils::capitalize(message.getName()) << " {" << endl;
-    os << "\tpublic:" << endl;
-    os << "\t\tstring encode();" << endl;
-    os << "\t\tvoid decode(string message);" << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << "\t\t" << typeMap.at(message.getFields().at(i).getType());
-        os << " get" << StringUtils::capitalize(message.getFields().at(i).getName()) << "();" << endl;
-    }
-
-    os << "\tprivate:" << endl;
-    os << "\t\tfriend class " << StringUtils::capitalize(message.getName()) << "Builder;" << endl;
-    os << "\t\t"<< StringUtils::capitalize(message.getName()) << "(";
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << typeMap.at(message.getFields().at(i).getType());
-        os << " " << message.getFields().at(i).getName();
-        
-        if (i < message.getFields().size() - 1) {
-            os << ", ";
-        }
-    }
-
-    os << ");" << endl;
-    
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << "\t\t" << typeMap.at(message.getFields().at(i).getType());
-        os << " " << message.getFields().at(i).getName() << ";" << endl;
-    }
-
-    os << "};" << endl;
-
-    return os.str();
-}
-
-string Temp::generateClassBuilderHeader(Message message) {
-    ostringstream os;
-    string className = StringUtils::capitalize(message.getName()) + "Builder";
-
-    os << "class " << className << " {" << endl;
-    os << "\tpublic:" << endl;
-    os << "\t\t" << StringUtils::capitalize(message.getName()) << " build();" << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << "\t\t" << className << "* set";
-        os << StringUtils::capitalize(message.getFields().at(i).getName()) << "(";
-        os << typeMap.at(message.getFields().at(i).getType()) << " ";
-        os << message.getFields().at(i).getName() << ");" << endl;
-    }
-
-    os << "\tprivate:" << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << "\t\t" << typeMap.at(message.getFields().at(i).getType());
-        os << " " << message.getFields().at(i).getName() << ";" << endl;
-    }
-
-    os << "};" << endl;
-
-    return os.str();
-}
-
-string Temp::generateCpp(Message message) {
-    ostringstream os;
-    string className = StringUtils::capitalize(message.getName());
-
-    os << "#include \"" << message.getName() <<".h\"" << endl << endl;
-    os << generateConstructor(message) << endl;
-    os << generateEncode(message) << endl;
-    os << generateDecode(message) << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << generateGetter(message.getFields().at(i), className) << endl;
-    }
-
-    os << generateBuild(message) << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << generateBuilderSetters(message.getFields().at(i), className) << endl;
-    }
-
-    return os.str();
-}
-
-string Temp::generateConstructor(Message message) {
-    ostringstream os;
-
-    os << StringUtils::capitalize(message.getName()) << "::";
-    os << StringUtils::capitalize(message.getName()) << "(";
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << typeMap.at(message.getFields().at(i).getType());
-        os << " " << message.getFields().at(i).getName();
-        
-        if (i < message.getFields().size() - 1) {
-            os << ", ";
-        }
-    }
-
-    os << ") {" << endl;
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << "\tthis->" << message.getFields().at(i).getName();
-        os << " = " << message.getFields().at(i).getName() << ";" << endl;
-    }
-
-    os << "}" << endl;
-
-    return os.str();
-}
-
-string Temp::generateEncode(Message message) {
+string JsonGenerator::generateEncode(Message message) {
     ostringstream os;
 
     os << "string " << StringUtils::capitalize(message.getName()) << "::encode() {" << endl;
@@ -161,7 +33,7 @@ string Temp::generateEncode(Message message) {
     return os.str();
 }
 
-string Temp::generateDecode(Message message) {
+string JsonGenerator::generateDecode(Message message) {
     ostringstream os;
 
     os << "void " << StringUtils::capitalize(message.getName()) << "::decode(string message) {" << endl;
@@ -177,59 +49,29 @@ string Temp::generateDecode(Message message) {
         else if (message.getFields().at(i).getType() == FIELD_TYPE_INT32) {
             os << "\tthis->" << fieldName << " = stoi(map.at(\"" << fieldName << "\"));" << endl;
         }
-    }
-
-    os << "}" << endl;
-
-    return os.str();
-}
-
-string Temp::generateGetter(MessageField field, string className) {
-    ostringstream os;
-    
-    os << typeMap.at(field.getType()) << " " << className << "::";
-    os << "get" << StringUtils::capitalize(field.getName()) << "() {" << endl;
-    os << "\treturn " << field.getName() << ";" << endl;
-    os << "}" << endl;
-
-    return os.str();
-}
-
-string Temp::generateBuilderSetters(MessageField field, string className) {
-    ostringstream os;
-    string builderClassName = className + "Builder";
-    
-    os << builderClassName << "* " << builderClassName << "::";
-    os << "set" << StringUtils::capitalize(field.getName()) << "(";
-    os << typeMap.at(field.getType()) << " " << field.getName() << ") {" << endl;
-    os << "\tthis->" << field.getName() << " = " << field.getName() << ";" << endl;
-    os << "\treturn this;" << endl;
-    os << "}" << endl;
-
-    return os.str();
-}
-
-string Temp::generateBuild(Message message) {
-    ostringstream os;
-    string className = StringUtils::capitalize(message.getName());
-
-    os << className << " " << className << "Builder::build() {" << endl;
-    os << "\treturn " << className << "(";
-
-    for (int i = 0; i < message.getFields().size(); i++) {
-        os << message.getFields().at(i).getName();
-        if (i < message.getFields().size() - 1) {
-            os << ", ";
+        else if (message.getFields().at(i).getType() == FIELD_TYPE_UINT32) {
+            os << "\tthis->" << fieldName << " = stoul(map.at(\"" << fieldName << "\"));" << endl;
+        }
+        else if (message.getFields().at(i).getType() == FIELD_TYPE_DOUBLE) {
+            os << "\tthis->" << fieldName << " = stod(map.at(\"" << fieldName << "\"));" << endl;
+        }
+        else if (message.getFields().at(i).getType() == FIELD_TYPE_UINT64) {
+            os << "\tthis->" << fieldName << " = stoul(map.at(\"" << fieldName << "\"));" << endl;
+        }
+        else if (message.getFields().at(i).getType() == FIELD_TYPE_INT64) {
+            os << "\tthis->" << fieldName << " = stol(map.at(\"" << fieldName << "\"));" << endl;
+        }
+        else if (message.getFields().at(i).getType() == FIELD_TYPE_BOOL) {
+            os << "\tthis->" << fieldName << " = map.at(\"" << fieldName << "\") == \"true\";" << endl;
         }
     }
 
-    os << ");" << endl;
     os << "}" << endl;
-    
+
     return os.str();
 }
 
-string Temp::generateUtilHeader() {
+string JsonGenerator::generateUtilHeader() {
     return R"(#pragma once
 
 #include <string>
@@ -243,6 +85,11 @@ class JsonUtils {
     public:
         static string toValue(string value);
         static string toValue(int value);
+        static string toValue(double value);
+        static string toValue(long value);
+        static string toValue(bool value);
+        static string toValue(unsigned int value);
+        static string toValue(unsigned long value);
 };
 
 class JsonParserState;
@@ -315,7 +162,7 @@ class JsonPostReadValueState : public JsonParserState {
 };)";
 }
 
-string Temp::generateUtilCpp() {
+string JsonGenerator::generateUtilCpp() {
     return R"(#include "JsonUtils.h"
 
 string JsonUtils::toValue(string value) {
@@ -328,6 +175,34 @@ string JsonUtils::toValue(int value) {
     ostringstream os;
     os << "\"" << value << "\"";
     return os.str();
+}
+
+string JsonUtils::toValue(double value) {
+    ostringstream os;
+    os << "\"" << value << "\"";
+    return os.str();
+}
+
+string JsonUtils::toValue(unsigned int value) {
+    ostringstream os;
+    os << "\"" << value << "\"";
+    return os.str();
+}
+
+string JsonUtils::toValue(unsigned long value) {
+    ostringstream os;
+    os << "\"" << value << "\"";
+    return os.str();
+}
+
+string JsonUtils::toValue(long value) {
+    ostringstream os;
+    os << "\"" << value << "\"";
+    return os.str();
+}
+
+string JsonUtils::toValue(bool value) {
+    return value ? "\"true\"" : "\"false\"";
 }
 
 JsonParser::JsonParser(string toParse) {

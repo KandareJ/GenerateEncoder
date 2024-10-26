@@ -2,7 +2,6 @@
 
 #include <vector>
 #include <string.h>
-#include <istream>
 
 #include "../Model/Token.h"
 #include "../Exceptions/SyntaxError.h"
@@ -14,14 +13,14 @@ class TokenizerState;
 
 class Tokenizer {
     public:
-        Tokenizer(istream* input);
+        Tokenizer();
         ~Tokenizer();
-        vector<Token> tokenize();
+        vector<Token> tokenize(string input);
     private:
         friend class TokenizerState;
+        void reset();
         void changeState(TokenizerState* newState);
         TokenizerState* state;
-        istream* input;
         vector<Token> tokens;
         string currentToken;
         int line;

@@ -2,12 +2,19 @@
 
 unordered_map<string, TokenType> Token::tokenTypeMap = {
     { "int32", TOKEN_TYPE_INT32 },
+    { "uint32", TOKEN_TYPE_UINT32 },
+    { "double", TOKEN_TYPE_DOUBLE },
+    { "bytes", TOKEN_TYPE_BYTES },
     { "message", TOKEN_TYPE_MESSAGE },
     { "string", TOKEN_TYPE_STRING },
     { "}", TOKEN_TYPE_CLOSING_CURLY },
     { "{", TOKEN_TYPE_OPENING_CURLY },
     { "=", TOKEN_TYPE_EQUALS },
-    { ";", TOKEN_TYPE_SEMI_COLON }
+    { ";", TOKEN_TYPE_SEMI_COLON },
+    { "bool", TOKEN_TYPE_BOOL },
+    { "uint64", TOKEN_TYPE_UINT64 },
+    { "int64", TOKEN_TYPE_INT64 },
+    { "list", TOKEN_TYPE_LIST}
 };
 
 Token::Token(string value, int line) {

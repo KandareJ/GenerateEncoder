@@ -85,8 +85,8 @@ class ParserIndexState : public ParserState {
         virtual void handleToken(Token current);
 };
 
-class ParserEndFieldState : public ParserState {
+class ParserListState : public ParserState {
     public:
-        ParserEndFieldState(Parser* parser);
+        ParserListState(Parser* parser);
         virtual void handleToken(Token current);
 };
