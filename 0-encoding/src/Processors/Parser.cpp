@@ -49,6 +49,14 @@ void ParserState::addMessage(Message message) {
     parser->messages.insert({message.getName(), message});
 }
 
+void ParserState::insertCustomType(string type) {
+    parser->customTypes.insert(type);
+}
+
+bool ParserState::containsCustomType(string type) {
+        return parser->customTypes.find(type) != parser->customTypes.end();
+}
+
 ParserBaseState::ParserBaseState(Parser* parser) {
     this->parser = parser;
 }
@@ -73,6 +81,12 @@ ParserMessageState::ParserMessageState(Parser* parser) {
 void ParserMessageState::handleToken(Token current) {
     if (current.getType() == TOKEN_TYPE_IDENTIFIER) {
         getMessageBuilder()->setName(current.getValue());
+        if (containsCustomType(current.getValue())) {
+            throw ParseError(current);
+        }
+        else {
+            insertCustomType(current.getValue());
+        }
         changeState(new ParserNameState(parser));
     }
     else {
@@ -122,6 +136,11 @@ void ParserOpenMessageState::handleToken(Token current) {
     else if (current.getType() == TOKEN_TYPE_LIST) {
         getFieldBuilder()->setIsList(true);
     }
+    else if (current.getType() == TOKEN_TYPE_IDENTIFIER && containsCustomType(current.getValue())) {
+        getMessageBuilder()->addDependency(current.getValue());
+        getFieldBuilder()->setCustomType(current.getValue());
+        changeState(new ParserTypeState(parser));
+    }
     else {
         throw ParseError(current);
     }
@@ -142,6 +161,11 @@ void ParserListState::handleToken(Token current) {
         || current.getType() == TOKEN_TYPE_BOOL
     ) {
         getFieldBuilder()->setTypeFromToken(current.getType());
+        changeState(new ParserTypeState(parser));
+    }
+    else if (current.getType() == TOKEN_TYPE_IDENTIFIER && containsCustomType(current.getValue())) {
+        getMessageBuilder()->addDependency(current.getValue());
+        getFieldBuilder()->setCustomType(current.getValue());
         changeState(new ParserTypeState(parser));
     }
     else {

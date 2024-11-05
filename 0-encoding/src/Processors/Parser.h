@@ -3,6 +3,7 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "../Model/Token.h"
 #include "../Model/Message.h"
@@ -19,6 +20,7 @@ class Parser {
         friend class ParserState;
         void changeState(ParserState* newState);
         unordered_map<string, Message> messages;
+        unordered_set<string> customTypes;
         ParserState* state;
         MessageFieldBuilder* messageFieldBuilder;
         MessageBuilder* messageBuilder;
@@ -33,6 +35,8 @@ class ParserState {
         MessageFieldBuilder* getFieldBuilder();
         MessageBuilder* getMessageBuilder();
         void addMessage(Message message);
+        void insertCustomType(string type);
+        bool containsCustomType(string type);
         Parser* parser;
 };
 

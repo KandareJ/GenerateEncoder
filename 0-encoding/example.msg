@@ -9,7 +9,7 @@ message User {
 
 message Notification {
     string notificationId = 1;
-    string userId = 2;
+    User target = 2;
     uint32 version = 3;
     uint64 timestamp = 4;
     int32 priority = 5;

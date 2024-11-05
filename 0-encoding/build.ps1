@@ -1,1 +1,1 @@
-g++ -o GenerateEncoder src/Utils/*.cpp src/Model/*.cpp src/Processors/*.cpp src/Exceptions/*.cpp src/*.cpp
+g++ -o GenerateEncoder src/Utils/*.cpp src/CodeGenerators/*.cpp src/Model/*.cpp src/Processors/*.cpp src/Exceptions/*.cpp src/*.cpp

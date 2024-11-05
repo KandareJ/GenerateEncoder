@@ -90,6 +90,11 @@ class JsonUtils {
         static string toValue(bool value);
         static string toValue(unsigned int value);
         static string toValue(unsigned long value);
+    private:
+        static std::string base64CharSet;
+        static unsigned int getPosInCharSet(char character);
+        static std::string encodeBase64(std::string bytes);
+        static std::string decodeBase64(std::string base64Bytes);
 };
 
 class JsonParserState;
@@ -320,6 +325,75 @@ void JsonPostReadValueState::readCharacter(char character) {
         push();
         changeState(new JsonInitialState(parser));
     }
+}
+
+std::string JsonUtils::base64CharSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
+
+unsigned int JsonUtils::getPosInCharSet(char character) {
+    if (character >= 'A' && character <= 'Z') {
+        return character - 'A';
+    }
+    else if (character >= 'a' && character <= 'z') {
+        return character - 'a' + ('Z' - 'A') + 1;
+    }
+    else if (character >= '0' && character <= '9') {
+        return character - '0' + ('Z' - 'A') + ('z' - 'a') + 2;
+    }
+    else if (character == '+' || character == '-') {
+        return 62;
+    }
+    else {
+        return 63;
+    }
+}
+
+std::string JsonUtils::encodeBase64(std::string bytes) {
+    std::string encoded;
+
+    for (int i = 0; i < bytes.size(); i+=3) {
+        encoded.push_back(base64CharSet[(bytes.at(i) & 0xfc) >> 2]);
+
+        if (i+1 < bytes.size()) {
+            encoded.push_back(base64CharSet[((bytes[i] & 0x03) << 4 ) + ((bytes[i+1] & 0xf0) >> 4)]);
+
+            if (i+2 < bytes.size()) {
+                encoded.push_back(base64CharSet[((bytes[i+1] & 0x0f) << 2) + ((bytes[i+2] & 0xc0) >> 6)]);
+                encoded.push_back(base64CharSet[  bytes[i+2] & 0x3f]);
+            }
+            else {
+                encoded.push_back(base64CharSet[(bytes[i+1] & 0x0f) << 2]);
+                encoded.push_back('=');
+            }
+        }
+        else {
+            encoded.push_back(base64CharSet[(bytes[i+1] & 0x03) << 4]);
+            encoded.push_back('=');
+            encoded.push_back('=');
+        }
+
+    }
+
+    return encoded;
+}
+
+std::string JsonUtils::decodeBase64(std::string base64Bytes) {
+    std::string decoded;
+
+    for (int i = 0; i < base64Bytes.length(); i+=4) {
+       int char1Pos = getPosInCharSet(base64Bytes.at(i+1) );
+       decoded.push_back(static_cast<std::string::value_type>(((getPosInCharSet(base64Bytes.at(i))) << 2) + ((char1Pos & 0x30) >> 4)));
+
+       if ((i + 2 < base64Bytes.length()) && base64Bytes.at(i+2) != '=') {
+          int char2Pos = getPosInCharSet(base64Bytes.at(i+2) );
+          decoded.push_back(static_cast<std::string::value_type>(((char1Pos & 0x0f) << 4) + ((char2Pos & 0x3c) >> 2)));
+
+          if (i + 3 < base64Bytes.length() && base64Bytes.at(i+3) != '=') {
+             decoded.push_back(static_cast<std::string::value_type>(((char2Pos & 0x03 ) << 6) + getPosInCharSet(base64Bytes.at(i+3))));
+          }
+       }
+    }
+
+    return decoded;
 }
 )";
 }

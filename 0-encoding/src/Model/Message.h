@@ -12,10 +12,12 @@ class Message {
         string toString();
         string getName();
         vector<MessageField> getFields();
+        std::unordered_set<std::string> getDependencies();
     private:
         friend class MessageBuilder;
-        Message(vector<MessageField> fields, string name);
+        Message(vector<MessageField> fields, string name, std::unordered_set<std::string> dependencies);
         vector<MessageField> fields;
+        std::unordered_set<std::string> dependencies;
         string name;
 };
 
@@ -24,9 +26,11 @@ class MessageBuilder {
         MessageBuilder();
         MessageBuilder* setName(string name);
         MessageBuilder* addField(MessageField field);
+        MessageBuilder* addDependency(std::string dependency);
         MessageBuilder* clear();
         Message build();
     private:
         vector<MessageField> fields;
+        std::unordered_set<std::string> dependencies;
         string name;
 };

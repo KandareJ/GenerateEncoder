@@ -1,10 +1,11 @@
 #include "MessageField.h"
 
-MessageField::MessageField(int index, string name, FieldType type, bool isList) {
+MessageField::MessageField(int index, string name, FieldType type, bool isList, string customType) {
     this->index = index;
     this->name = name;
     this->type = type;
-    this->isList = isList;
+    this->_isList = isList;
+    this->customType = customType;
 }
 
 int MessageField::getIndex() {
@@ -19,14 +20,18 @@ FieldType MessageField::getType() {
     return type;
 }
 
-bool MessageField::getIsList() {
-    return isList;
+std::string MessageField::getCustomType() {
+    return customType;
+}
+
+bool MessageField::isList() {
+    return _isList;
 }
 
 string MessageField::toString() {
     ostringstream os;
     os << "<FIELD " << name;
-    if (isList) {
+    if (_isList) {
         os << "[]";
     }
     os << " " << index << ">";
@@ -68,6 +73,13 @@ MessageFieldBuilder* MessageFieldBuilder::setTypeFromToken(TokenType type) {
     return this;
 }
 
+MessageFieldBuilder* MessageFieldBuilder::setCustomType(string type) {
+    this->customType = type;
+    this->type = FIELD_TYPE_CUSTOM;
+
+    return this;
+}
+
 MessageFieldBuilder* MessageFieldBuilder::setIsList(bool isList) {
     this->isList = isList;
     return this;
@@ -84,7 +96,7 @@ MessageFieldBuilder* MessageFieldBuilder::clear() {
 
 MessageField MessageFieldBuilder::build() {
     if (index >= 0 && name != "" && type != FIELD_TYPE_UNSET) {
-        return MessageField(index, name, type, isList);
+        return MessageField(index, name, type, isList, customType);
     } else {
         throw MessageFieldBuilderError(index, name);
     }

@@ -23,7 +23,9 @@ class CppCodeGenerator : public CodeGenerator {
         string generateClassBuilderHeader(Message message);
         string generateConstructor(Message message);
         string generateGetter(MessageField field, string className);
-        string generateBuilderSetters(MessageField field, string className);
+        string generateBuilderSetter(MessageField field, string className);
+        string generateClear(Message message);
         string generateBuild(Message message);
+        string getTypeFromField(MessageField field);
         static unordered_map<FieldType, string> typeMap;
 };

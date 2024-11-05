@@ -1,8 +1,9 @@
 #include "Message.h"
 
-Message::Message(vector<MessageField> fields, string name) {
+Message::Message(vector<MessageField> fields, string name, std::unordered_set<std::string> dependencies) {
     this->fields = fields;
     this->name = name;
+    this->dependencies = dependencies;
 }
 
 string Message::toString() {
@@ -24,6 +25,10 @@ vector<MessageField> Message::getFields() {
     return fields;
 }
 
+std::unordered_set<std::string> Message::getDependencies() {
+    return dependencies;
+}
+
 MessageBuilder::MessageBuilder() {
     this->clear();
 }
@@ -38,9 +43,15 @@ MessageBuilder* MessageBuilder::addField(MessageField field) {
     return this;
 }
 
+MessageBuilder* MessageBuilder::addDependency(std::string dependency) {
+    dependencies.insert(dependency);
+    return this;
+}
+
 MessageBuilder* MessageBuilder::clear() {
     name = "";
     fields.clear();
+    dependencies.clear();
     return this;
 }
 
@@ -72,5 +83,5 @@ Message MessageBuilder::build() {
         }
     }
 
-    return Message(fields, name);
+    return Message(fields, name, dependencies);
 }

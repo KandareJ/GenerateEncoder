@@ -11,11 +11,6 @@ int Program::run(int argc, char** argv) {
         std::string input = FileUtil::readFile(command.getInputFile());
         std::vector<Token> tokens = tokenizer.tokenize(input);
         std::unordered_map<string, Message> messages = parser.parse(tokens);
-
-        for (std::unordered_map<string, Message>::iterator it = messages.begin(); it != messages.end(); it++) {
-            std::cout << it->second.toString() << std::endl;
-        }
-
         std::vector<OutputFile> outputs = codeGenerator->generateCode(messages);
 
         for (int i = 0; i < outputs.size(); i++) {
