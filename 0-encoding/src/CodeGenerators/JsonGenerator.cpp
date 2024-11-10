@@ -15,13 +15,13 @@ string JsonGenerator::generateEncode(Message message) {
 
     for (int i = 0; i < message.getFields().size(); i++) {
         os << "\tos << \"\\\"" << message.getFields().at(i).getName() << "\\\":\"" << " << ";
-        os << "JsonUtils::toValue(get" << StringUtils::capitalize(message.getFields().at(i).getName());
+        os << generateEncodeField(message.getFields().at(i));
         
         if (i < message.getFields().size() - 1) {
-            os << "()) << \",\";" << endl;
+            os << " << \",\";" << endl;
         }
         else {
-            os << "());" << endl;
+            os << ";" << endl;
         }
 
     }
@@ -29,6 +29,49 @@ string JsonGenerator::generateEncode(Message message) {
     os << "\tos << \"}\";" << endl << endl;
     os << "\treturn os.str();" << endl;
     os << "}" << endl;
+
+    return os.str();
+}
+
+string JsonGenerator::generateEncodeField(MessageField field) {
+    ostringstream os;
+
+    if (field.isList()) {
+        os << "\"[\";" << endl;
+
+        os << "\tfor (int i = 0; i < " << field.getName() << ".size(); i++) {" << endl;
+        os << "\t\tos << ";
+
+        if (field.getType() == FIELD_TYPE_CUSTOM) {
+            os << field.getName() << ".at(i).encode()";
+        }
+        else if (field.getType() == FIELD_TYPE_BYTES) {
+            os << "JsonUtils::toValue(JsonUtils::encodeBase64(" << field.getName() << "))";
+        }
+        else {
+            os << "JsonUtils::toValue(" << field.getName() << ".at(i));" << endl;
+        }
+
+        os << "\t\tif (i < " << field.getName() << ".size() - 1) {" << endl;
+        os << "\t\t\tos << \",\";" << endl;
+        os << "\t\t}" << endl;
+
+        os << "\t}" << endl;
+
+        os << "\tos << \"]\"";
+    }
+    else {
+        if (field.getType() == FIELD_TYPE_CUSTOM) {
+            os << field.getName() << ".encode()";
+        }
+        else if (field.getType() == FIELD_TYPE_BYTES) {
+            os << "JsonUtils::toValue(JsonUtils::encodeBase64(" << field.getName() << "))";
+        }
+        else {
+            os << "JsonUtils::toValue(" << field.getName() << ")";
+
+        }
+    }
 
     return os.str();
 }
@@ -90,11 +133,11 @@ class JsonUtils {
         static string toValue(bool value);
         static string toValue(unsigned int value);
         static string toValue(unsigned long value);
+        static std::string encodeBase64(std::string bytes);
+        static std::string decodeBase64(std::string base64Bytes);
     private:
         static std::string base64CharSet;
         static unsigned int getPosInCharSet(char character);
-        static std::string encodeBase64(std::string bytes);
-        static std::string decodeBase64(std::string base64Bytes);
 };
 
 class JsonParserState;

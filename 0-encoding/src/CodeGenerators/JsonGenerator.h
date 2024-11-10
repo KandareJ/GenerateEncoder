@@ -9,6 +9,7 @@ class JsonGenerator : public CppCodeGenerator {
     private:
         virtual string getIncludeHeaders();
         virtual string generateEncode(Message message);
+        string generateEncodeField(MessageField field);
         virtual string generateDecode(Message message);
 
 };
