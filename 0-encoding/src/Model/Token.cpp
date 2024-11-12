@@ -1,6 +1,6 @@
 #include "Token.h"
 
-unordered_map<string, TokenType> Token::tokenTypeMap = {
+std::unordered_map<std::string, TokenType> Token::tokenTypeMap = {
     { "int32", TOKEN_TYPE_INT32 },
     { "uint32", TOKEN_TYPE_UINT32 },
     { "double", TOKEN_TYPE_DOUBLE },
@@ -17,7 +17,7 @@ unordered_map<string, TokenType> Token::tokenTypeMap = {
     { "list", TOKEN_TYPE_LIST}
 };
 
-Token::Token(string value, int line) {
+Token::Token(std::string value, int line) {
     this->value = value;
     this->line = line;
 
@@ -41,7 +41,7 @@ TokenType Token::getType() {
     return type;
 }
 
-string Token::getValue() {
+std::string Token::getValue() {
     return value;
 }
 

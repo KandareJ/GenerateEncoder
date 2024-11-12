@@ -1,8 +1,8 @@
 #include "FileUtil.h"
 
-string FileUtil::readFile(string filePath) {
-    ostringstream os;
-    ifstream file;
+std::string FileUtil::readFile(std::string filePath) {
+    std::ostringstream os;
+    std::ifstream file;
     file.open(filePath);
 
     char current;
@@ -15,8 +15,8 @@ string FileUtil::readFile(string filePath) {
     return os.str();
 }
 
-void FileUtil::writeFile(string filePath, string contents) {
-    ofstream file;
+void FileUtil::writeFile(std::string filePath, std::string contents) {
+    std::ofstream file;
     file.open(filePath);
     file << contents;
     file.close();

@@ -1,3 +1,5 @@
+#pragma once
+
 #include <unordered_map>
 #include <vector>
 #include <string>
@@ -6,8 +8,19 @@
 class JsonUtils {
     public:
         static bool isDigit(char character);
-        static bool isCharacter(char character);
         static bool isWhitespace(char character);
+        static std::string toValue(std::string value);
+        static std::string toValue(int value);
+        static std::string toValue(double value);
+        static std::string toValue(long value);
+        static std::string toValue(bool value);
+        static std::string toValue(unsigned int value);
+        static std::string toValue(unsigned long value);
+        static std::string encodeBase64(std::string bytes);
+        static std::string decodeBase64(std::string base64Bytes);
+    private:
+        static std::string base64CharSet;
+        static unsigned int getPosInCharSet(char character);
 };
 
 class JsonParseError {

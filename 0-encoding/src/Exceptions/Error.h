@@ -2,13 +2,11 @@
 
 #include <string>
 
-using namespace std;
-
 class Error {
     public:
         Error();
-        string getMessage();
-        void setMessage(string message);
+        std::string getMessage();
+        void setMessage(std::string message);
     private:
-        string message;
+        std::string message;
 };

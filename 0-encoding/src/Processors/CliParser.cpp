@@ -5,10 +5,10 @@ Command CliParser::parseCommand(int argc, char** argv) {
         throw CliError("Unexpected number of arguments: " + getUsage());
     }
 
-    string encodingType = string(argv[1]);
-    string outputLanguage = string(argv[2]);
-    string inputFile = string(argv[3]);
-    string outputDirectory = string(argv[4]);
+    std::string encodingType = std::string(argv[1]);
+    std::string outputLanguage = std::string(argv[2]);
+    std::string inputFile = std::string(argv[3]);
+    std::string outputDirectory = std::string(argv[4]);
     
     if (encodingType != "json" && encodingType != "jbuf") {
         throw CliError("Unexpected encoding_type: " + getUsage());
@@ -21,11 +21,11 @@ Command CliParser::parseCommand(int argc, char** argv) {
     return Command(encodingType, outputLanguage, inputFile, outputDirectory);
 }
 
-string CliParser::getUsage() {
-    ostringstream os;
-    os << "usage: GenerateEncoder encoding_type output_language input_file output_directory" << endl;
-    os << "  options:" << endl;
-    os << "    encoding_type\tjson, jbuf" << endl;
-    os << "    output_langauge\tcpp" << endl;
+std::string CliParser::getUsage() {
+    std::ostringstream os;
+    os << "usage: GenerateEncoder encoding_type output_language input_file output_directory" << std::endl;
+    os << "  options:" << std::endl;
+    os << "    encoding_type\tjson, jbuf" << std::endl;
+    os << "    output_langauge\tcpp" << std::endl;
     return os.str();
 }

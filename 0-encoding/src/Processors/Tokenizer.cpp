@@ -10,12 +10,12 @@ Tokenizer::~Tokenizer() {
 
 void Tokenizer::reset() {
     line = 1;
-    tokens = vector<Token>();
+    tokens = std::vector<Token>();
     currentToken = "";
     this->state = new BaseState(this);
 }
 
-vector<Token> Tokenizer::tokenize(string input) {
+std::vector<Token> Tokenizer::tokenize(std::string input) {
     reset();
 
     for (int i = 0; i < input.length(); i++) {

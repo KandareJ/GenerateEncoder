@@ -4,8 +4,6 @@
 #include <unordered_map>
 #include "../Utils/TokenUtils.h"
 
-using namespace std;
-
 enum TokenType {
     TOKEN_TYPE_MESSAGE,
     TOKEN_TYPE_IDENTIFIER,
@@ -27,14 +25,14 @@ enum TokenType {
 
 class Token {
     public:
-        Token(string value, int line);
+        Token(std::string value, int line);
         ~Token();
         TokenType getType();
-        string getValue();
+        std::string getValue();
         int getLine();
     private:
         TokenType type;
-        string value;
+        std::string value;
         int line;
-        static unordered_map<string, TokenType> tokenTypeMap;
+        static std::unordered_map<std::string, TokenType> tokenTypeMap;
 };

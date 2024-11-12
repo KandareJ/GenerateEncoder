@@ -1,7 +1,7 @@
 #include "BuilderError.h"
 
-MessageFieldBuilderError::MessageFieldBuilderError(int index, string name) {
-    ostringstream os;
+MessageFieldBuilderError::MessageFieldBuilderError(int index, std::string name) {
+    std::ostringstream os;
     os << "Unable to set field " << name << ": ";
     
     if (index <= 0) {
@@ -17,8 +17,8 @@ MessageFieldBuilderError::MessageFieldBuilderError(int index, string name) {
     this->setMessage(os.str());
 }
 
-MessageBuilderError::MessageBuilderError(string name, string message) {
-    ostringstream os;
+MessageBuilderError::MessageBuilderError(std::string name, std::string message) {
+    std::ostringstream os;
     os << "Unable to build message " << name << ": " << message;
     this->setMessage(os.str());
 }

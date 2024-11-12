@@ -1,13 +1,11 @@
 #pragma once
 
 #include <vector>
-#include <string.h>
+#include <string>
 
 #include "../Model/Token.h"
 #include "../Exceptions/SyntaxError.h"
 #include "../Utils/TokenUtils.h"
-
-using namespace std;
 
 class TokenizerState;
 
@@ -15,14 +13,14 @@ class Tokenizer {
     public:
         Tokenizer();
         ~Tokenizer();
-        vector<Token> tokenize(string input);
+        std::vector<Token> tokenize(std::string input);
     private:
         friend class TokenizerState;
         void reset();
         void changeState(TokenizerState* newState);
         TokenizerState* state;
-        vector<Token> tokens;
-        string currentToken;
+        std::vector<Token> tokens;
+        std::string currentToken;
         int line;
 };
 

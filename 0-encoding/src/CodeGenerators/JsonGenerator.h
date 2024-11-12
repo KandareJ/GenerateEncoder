@@ -4,12 +4,13 @@
 
 class JsonGenerator : public CppCodeGenerator {
     public:
-        virtual string generateUtilHeader();
-        virtual string generateUtilCpp();
+        virtual std::string generateUtilHeader();
+        virtual std::string generateUtilCpp();
     private:
-        virtual string getIncludeHeaders();
-        virtual string generateEncode(Message message);
-        string generateEncodeField(MessageField field);
-        virtual string generateDecode(Message message);
-
+        virtual std::string getIncludeHeaders();
+        virtual std::string generateEncode(Message message);
+        std::string generateEncodeField(MessageField field);
+        virtual std::string generateDecode(Message message);
+        std::string generateDecodeField(MessageField field);
+        virtual std::string generateAdditionalPublic(Message message);
 };

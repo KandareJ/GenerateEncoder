@@ -7,8 +7,6 @@
 #include "../Exceptions/BuilderError.h"
 #include "Token.h"
 
-using namespace std;
-
 enum FieldType {
     FIELD_TYPE_UNSET,
     FIELD_TYPE_STRING,
@@ -25,17 +23,17 @@ enum FieldType {
 class MessageField {
     public:
         int getIndex();
-        string getName();
+        std::string getName();
         FieldType getType();
         std::string getCustomType();
         bool isList();
-        string toString();
+        std::string toString();
     private:
         friend class MessageFieldBuilder;
-        MessageField(int index, string name, FieldType type, bool isList, string customType);
+        MessageField(int index, std::string name, FieldType type, bool isList, std::string customType);
         int index;
-        string name;
-        string customType;
+        std::string name;
+        std::string customType;
         FieldType type;
         bool _isList;
 };
@@ -44,18 +42,18 @@ class MessageFieldBuilder {
     public:
         MessageFieldBuilder();
         MessageFieldBuilder* setIndex(int index);
-        MessageFieldBuilder* setName(string name);
+        MessageFieldBuilder* setName(std::string name);
         MessageFieldBuilder* setTypeFromToken(TokenType type);
-        MessageFieldBuilder* setCustomType(string type);
+        MessageFieldBuilder* setCustomType(std::string type);
         MessageFieldBuilder* setIsList(bool isList);
         MessageFieldBuilder* clear();
         MessageField build();
     private:
         int index;
-        string name;
+        std::string name;
         FieldType type;
-        string customType;
+        std::string customType;
         bool isList;
-        static unordered_map<TokenType, FieldType> typesMap;
+        static std::unordered_map<TokenType, FieldType> typesMap;
 };
 

@@ -1,5 +1,5 @@
 #include "CliError.h"
 
-CliError::CliError(string message) {
+CliError::CliError(std::string message) {
     setMessage(message);
 }

@@ -1,24 +1,24 @@
 #include "Command.h"
 
-Command::Command(string encodingType, string outputLanguage, string inputFile, string outputDirectory) {
+Command::Command(std::string encodingType, std::string outputLanguage, std::string inputFile, std::string outputDirectory) {
     this->encodingType = encodingType;
     this->outputLanguage = outputLanguage;
     this->inputFile = inputFile;
     this->outputDirectory = outputDirectory;
 }
 
-string Command::getEncodingType() {
+std::string Command::getEncodingType() {
     return encodingType;
 }
 
-string Command::getOutputLanguage() {
+std::string Command::getOutputLanguage() {
     return outputLanguage;
 }
 
-string Command::getInputFile() {
+std::string Command::getInputFile() {
     return inputFile;
 }
 
-string Command::getOutputDirectory() {
+std::string Command::getOutputDirectory() {
     return outputDirectory;
 }

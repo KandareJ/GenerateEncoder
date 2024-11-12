@@ -4,10 +4,10 @@ Error::Error() {
     this->message = "";
 }
 
-string Error::getMessage() {
+std::string Error::getMessage() {
     return this->message;
 }
 
-void Error::setMessage(string message) {
+void Error::setMessage(std::string message) {
     this->message = message;
 }

@@ -4,10 +4,8 @@
 #include <sstream>
 #include <string>
 
-using namespace std;
-
 class FileUtil {
     public:
-        static string readFile(string filePath);
-        static void writeFile(string filePath, string contents);
+        static std::string readFile(std::string filePath);
+        static void writeFile(std::string filePath, std::string contents);
 };

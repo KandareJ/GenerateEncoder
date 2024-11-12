@@ -12,7 +12,7 @@ Parser::~Parser() {
     delete messageBuilder;
 }
 
-unordered_map<string, Message> Parser::parse(vector<Token> tokens) {
+std::unordered_map<std::string, Message> Parser::parse(std::vector<Token> tokens) {
     for (int i = 0; i < tokens.size(); i++) {
         state->handleToken(tokens.at(i));
     }
@@ -49,11 +49,11 @@ void ParserState::addMessage(Message message) {
     parser->messages.insert({message.getName(), message});
 }
 
-void ParserState::insertCustomType(string type) {
+void ParserState::insertCustomType(std::string type) {
     parser->customTypes.insert(type);
 }
 
-bool ParserState::containsCustomType(string type) {
+bool ParserState::containsCustomType(std::string type) {
         return parser->customTypes.find(type) != parser->customTypes.end();
 }
 

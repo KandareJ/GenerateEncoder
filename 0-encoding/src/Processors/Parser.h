@@ -15,12 +15,12 @@ class Parser {
     public:
         Parser();
         ~Parser();
-        unordered_map<string, Message> parse(vector<Token>);
+        std::unordered_map<std::string, Message> parse(std::vector<Token>);
     private:
         friend class ParserState;
         void changeState(ParserState* newState);
-        unordered_map<string, Message> messages;
-        unordered_set<string> customTypes;
+        std::unordered_map<std::string, Message> messages;
+        std::unordered_set<std::string> customTypes;
         ParserState* state;
         MessageFieldBuilder* messageFieldBuilder;
         MessageBuilder* messageBuilder;
@@ -35,8 +35,8 @@ class ParserState {
         MessageFieldBuilder* getFieldBuilder();
         MessageBuilder* getMessageBuilder();
         void addMessage(Message message);
-        void insertCustomType(string type);
-        bool containsCustomType(string type);
+        void insertCustomType(std::string type);
+        bool containsCustomType(std::string type);
         Parser* parser;
 };
 

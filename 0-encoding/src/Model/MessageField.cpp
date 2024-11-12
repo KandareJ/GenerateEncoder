@@ -1,6 +1,6 @@
 #include "MessageField.h"
 
-MessageField::MessageField(int index, string name, FieldType type, bool isList, string customType) {
+MessageField::MessageField(int index, std::string name, FieldType type, bool isList, std::string customType) {
     this->index = index;
     this->name = name;
     this->type = type;
@@ -12,7 +12,7 @@ int MessageField::getIndex() {
     return index;
 }
 
-string MessageField::getName() {
+std::string MessageField::getName() {
     return name;
 }
 
@@ -28,8 +28,8 @@ bool MessageField::isList() {
     return _isList;
 }
 
-string MessageField::toString() {
-    ostringstream os;
+std::string MessageField::toString() {
+    std::ostringstream os;
     os << "<FIELD " << name;
     if (_isList) {
         os << "[]";
@@ -38,7 +38,7 @@ string MessageField::toString() {
     return os.str();
 }
 
-unordered_map<TokenType, FieldType> MessageFieldBuilder::typesMap = {
+std::unordered_map<TokenType, FieldType> MessageFieldBuilder::typesMap = {
     {TOKEN_TYPE_STRING, FIELD_TYPE_STRING},
     {TOKEN_TYPE_INT32, FIELD_TYPE_INT32},
     {TOKEN_TYPE_UINT32, FIELD_TYPE_UINT32},
@@ -58,7 +58,7 @@ MessageFieldBuilder* MessageFieldBuilder::setIndex(int index) {
     return this;
 }
 
-MessageFieldBuilder* MessageFieldBuilder::setName(string name) {
+MessageFieldBuilder* MessageFieldBuilder::setName(std::string name) {
     this->name = name;
     return this;
 }
@@ -73,7 +73,7 @@ MessageFieldBuilder* MessageFieldBuilder::setTypeFromToken(TokenType type) {
     return this;
 }
 
-MessageFieldBuilder* MessageFieldBuilder::setCustomType(string type) {
+MessageFieldBuilder* MessageFieldBuilder::setCustomType(std::string type) {
     this->customType = type;
     this->type = FIELD_TYPE_CUSTOM;
 

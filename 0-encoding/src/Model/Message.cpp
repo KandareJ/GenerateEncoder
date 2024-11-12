@@ -1,27 +1,27 @@
 #include "Message.h"
 
-Message::Message(vector<MessageField> fields, string name, std::unordered_set<std::string> dependencies) {
+Message::Message(std::vector<MessageField> fields, std::string name, std::unordered_set<std::string> dependencies) {
     this->fields = fields;
     this->name = name;
     this->dependencies = dependencies;
 }
 
-string Message::toString() {
-    ostringstream os;
-    os << "<Message " << name << endl;
+std::string Message::toString() {
+    std::ostringstream os;
+    os << "<Message " << name << std::endl;
     for (int i = 0; i < fields.size(); i++) {
-        os << "\t" << fields.at(i).toString() << endl;
+        os << "\t" << fields.at(i).toString() << std::endl;
     }
     os << ">";
 
     return os.str();
 }
 
-string Message::getName() {
+std::string Message::getName() {
     return name;
 }
 
-vector<MessageField> Message::getFields() {
+std::vector<MessageField> Message::getFields() {
     return fields;
 }
 
@@ -33,7 +33,7 @@ MessageBuilder::MessageBuilder() {
     this->clear();
 }
 
-MessageBuilder* MessageBuilder::setName(string name) {
+MessageBuilder* MessageBuilder::setName(std::string name) {
     this->name = name;
     return this;
 }
@@ -60,15 +60,15 @@ Message MessageBuilder::build() {
         throw MessageBuilderError();
     }
     
-    unordered_set<int> indexes;
-    unordered_set<string> names;
+    std::unordered_set<int> indexes;
+    std::unordered_set<std::string> names;
 
     for (int i = 0; i < fields.size(); i++) {
         if (indexes.find(fields.at(i).getIndex()) == indexes.end()) {
             indexes.insert(fields.at(i).getIndex());
         }
         else {
-            ostringstream os;
+            std::ostringstream os;
             os << "Duplicate index " << fields.at(i).getIndex();
             throw MessageBuilderError(name, os.str());
         }
@@ -77,7 +77,7 @@ Message MessageBuilder::build() {
             names.insert(fields.at(i).getName());
         }
         else {
-            ostringstream os;
+            std::ostringstream os;
             os << "Duplicate name " << fields.at(i).getName();
             throw MessageBuilderError(name, os.str());
         }

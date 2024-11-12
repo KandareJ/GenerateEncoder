@@ -2,18 +2,16 @@
 
 #include <string>
 
-using namespace std;
-
 class Command {
     public:
-        Command(string encodingType, string outputLanguage, string inputFile, string outputDirectory);
-        string getEncodingType();
-        string getOutputLanguage();
-        string getInputFile();
-        string getOutputDirectory();
+        Command(std::string encodingType, std::string outputLanguage, std::string inputFile, std::string outputDirectory);
+        std::string getEncodingType();
+        std::string getOutputLanguage();
+        std::string getInputFile();
+        std::string getOutputDirectory();
     private:
-        string encodingType;
-        string outputLanguage;
-        string inputFile;
-        string outputDirectory;
+        std::string encodingType;
+        std::string outputLanguage;
+        std::string inputFile;
+        std::string outputDirectory;
 };

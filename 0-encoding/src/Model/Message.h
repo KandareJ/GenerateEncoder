@@ -9,28 +9,28 @@
 
 class Message {
     public:
-        string toString();
-        string getName();
-        vector<MessageField> getFields();
+        std::string toString();
+        std::string getName();
+        std::vector<MessageField> getFields();
         std::unordered_set<std::string> getDependencies();
     private:
         friend class MessageBuilder;
-        Message(vector<MessageField> fields, string name, std::unordered_set<std::string> dependencies);
-        vector<MessageField> fields;
+        Message(std::vector<MessageField> fields, std::string name, std::unordered_set<std::string> dependencies);
+        std::vector<MessageField> fields;
         std::unordered_set<std::string> dependencies;
-        string name;
+        std::string name;
 };
 
 class MessageBuilder {
     public:
         MessageBuilder();
-        MessageBuilder* setName(string name);
+        MessageBuilder* setName(std::string name);
         MessageBuilder* addField(MessageField field);
         MessageBuilder* addDependency(std::string dependency);
         MessageBuilder* clear();
         Message build();
     private:
-        vector<MessageField> fields;
+        std::vector<MessageField> fields;
         std::unordered_set<std::string> dependencies;
-        string name;
+        std::string name;
 };

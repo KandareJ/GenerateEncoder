@@ -6,11 +6,11 @@
 
 class MessageFieldBuilderError : public Error {
     public:
-        MessageFieldBuilderError(int index, string name);
+        MessageFieldBuilderError(int index, std::string name);
 };
 
 class MessageBuilderError : public Error {
     public:
-        MessageBuilderError(string name, string message);
+        MessageBuilderError(std::string name, std::string message);
         MessageBuilderError();
 };
