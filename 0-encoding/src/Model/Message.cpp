@@ -1,4 +1,4 @@
-#include "Message.h"
+#include "Model/Message.h"
 
 Message::Message(std::vector<MessageField> fields, std::string name, std::unordered_set<std::string> dependencies) {
     this->fields = fields;

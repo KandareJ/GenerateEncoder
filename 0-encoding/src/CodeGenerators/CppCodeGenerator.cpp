@@ -1,4 +1,4 @@
-#include "CppCodeGenerator.h"
+#include "CodeGenerators/CppCodeGenerator.h"
 
 std::vector<OutputFile> CppCodeGenerator::generateCode(std::unordered_map<std::string, Message> messages) {
     std::vector<OutputFile> outputs;

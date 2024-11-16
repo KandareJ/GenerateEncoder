@@ -1,4 +1,4 @@
-#include "JsonGenerator.h"
+#include "CodeGenerators/JsonGenerator.h"
 
 std::string JsonGenerator::getIncludeHeaders() {
     std::ostringstream os;

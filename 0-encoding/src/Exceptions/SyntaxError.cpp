@@ -1,4 +1,4 @@
-#include "SyntaxError.h"
+#include "Exceptions/SyntaxError.h"
 
 SyntaxError::SyntaxError(int line, char character) {
     std::ostringstream os;

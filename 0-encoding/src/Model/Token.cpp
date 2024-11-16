@@ -1,4 +1,4 @@
-#include "Token.h"
+#include "Model/Token.h"
 
 std::unordered_map<std::string, TokenType> Token::tokenTypeMap = {
     { "int32", TOKEN_TYPE_INT32 },
