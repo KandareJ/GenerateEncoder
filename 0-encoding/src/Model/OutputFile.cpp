@@ -1,4 +1,4 @@
-#include "OutputFile.h"
+#include "Model/OutputFile.h"
 
 OutputFile::OutputFile(std::string path, std::string contents) {
     this->path = path;

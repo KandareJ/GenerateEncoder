@@ -1,4 +1,4 @@
-#include "StringUtils.h"
+#include "Utils/StringUtils.h"
 
 std::string StringUtils::capitalize(std::string str) {
     if (!str.empty()) {

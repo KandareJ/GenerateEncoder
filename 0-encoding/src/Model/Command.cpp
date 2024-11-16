@@ -1,4 +1,4 @@
-#include "Command.h"
+#include "Model/Command.h"
 
 Command::Command(std::string encodingType, std::string outputLanguage, std::string inputFile, std::string outputDirectory) {
     this->encodingType = encodingType;

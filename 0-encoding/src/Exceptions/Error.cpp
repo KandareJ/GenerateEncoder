@@ -1,4 +1,4 @@
-#include "Error.h"
+#include "Exceptions/Error.h"
 
 Error::Error() {
     this->message = "";

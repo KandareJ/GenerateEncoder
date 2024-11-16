@@ -1,4 +1,4 @@
-#include "MessageField.h"
+#include "Model/MessageField.h"
 
 MessageField::MessageField(int index, std::string name, FieldType type, bool isList, std::string customType) {
     this->index = index;
