@@ -64,6 +64,7 @@ void BaseState::readCharacter(char current) {
     switch (current) {
         case ' ':
             break;
+        case 13:
         case '\n':
             incrementLine();
             break;

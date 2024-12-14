@@ -1,4 +1,7 @@
 #include "Processors/Program.h"
+#include <iostream>
+
+using namespace std;
 
 int Program::run(int argc, char** argv) {
     try {
@@ -9,6 +12,7 @@ int Program::run(int argc, char** argv) {
         // TODO: initialize codeGenerator based on command args
 
         std::string input = FileUtil::readFile(command.getInputFile());
+        cout << input << endl;
         std::vector<Token> tokens = tokenizer.tokenize(input);
         std::unordered_map<std::string, Message> messages = parser.parse(tokens);
         std::vector<OutputFile> outputs = codeGenerator->generateCode(messages);

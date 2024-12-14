@@ -1,5 +1,7 @@
 #include "CodeGenerators/CppCodeGenerator.h"
 
+#include <iostream>
+
 std::vector<OutputFile> CppCodeGenerator::generateCode(std::unordered_map<std::string, Message> messages) {
     std::vector<OutputFile> outputs;
     outputs.push_back(OutputFile("JsonUtils.h", generateUtilHeader()));
@@ -7,7 +9,9 @@ std::vector<OutputFile> CppCodeGenerator::generateCode(std::unordered_map<std::s
 
     for (std::unordered_map<std::string, Message>::iterator it = messages.begin(); it != messages.end(); it++) {
         std::string fileName = StringUtils::capitalize(it->first);
+        std::cout << fileName << ".h" << std::endl;
         outputs.push_back(OutputFile(fileName + ".h", generateHeader(it->second)));
+        std::cout << fileName << ".cpp" << std::endl;
         outputs.push_back(OutputFile(fileName + ".cpp", generateCpp(it->second)));
     }
 
