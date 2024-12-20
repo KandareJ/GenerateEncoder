@@ -26,6 +26,7 @@ class Tokenizer {
 
 class TokenizerState {
     public:
+        virtual ~TokenizerState();
         virtual void readCharacter(char character) = 0;
     protected:
         void changeState(TokenizerState* newState);

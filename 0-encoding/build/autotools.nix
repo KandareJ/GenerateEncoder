@@ -5,8 +5,6 @@ let
     args = [ ./builder.sh ];
     setup = ./setup.sh;
     baseInputs = with pkgs; [
-      gnutar
-      gzip
       git
       gnumake
       gcc

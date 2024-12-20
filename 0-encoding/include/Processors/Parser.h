@@ -14,7 +14,7 @@ class ParserState;
 class Parser {
     public:
         Parser();
-        ~Parser();
+        virtual ~Parser();
         std::unordered_map<std::string, Message> parse(std::vector<Token>);
     private:
         friend class ParserState;
@@ -30,6 +30,7 @@ class ParserState {
     public:
         virtual void handleToken(Token current) = 0;
         virtual bool isTerminalState();
+        virtual ~ParserState();
     protected:
         void changeState(ParserState* state);
         MessageFieldBuilder* getFieldBuilder();

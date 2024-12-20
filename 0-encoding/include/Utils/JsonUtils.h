@@ -25,7 +25,7 @@ class JsonUtils {
 
 class JsonParseError {
     public:
-        JsonParseError(std::string input, int index);
+        JsonParseError(std::string input, unsigned int index);
         std::string getMessage();
     private:
         std::string message;
@@ -66,7 +66,7 @@ class JsonParser {
     public:
         JsonParser();
         ~JsonParser();
-        JsonObject* parse(std::string input, int& index);
+        JsonObject* parse(std::string input, unsigned int& index);
         JsonObject* parse(std::string input);
     private:
         friend class JsonParserState;
@@ -80,7 +80,8 @@ class JsonParser {
 class JsonParserState {
     public:
         JsonParserState(JsonParser* parser);
-        virtual void readCharacter(std::string input, int& index) = 0;
+        virtual ~JsonParserState();
+        virtual void readCharacter(std::string input, unsigned int& index) = 0;
         virtual bool isTerminalState();
     protected:
         void changeState(JsonParserState* nextState);
@@ -92,72 +93,72 @@ class JsonParserState {
 class JsonParserInitialState : public JsonParserState {
     public:
         JsonParserInitialState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserObjectState : public JsonParserState {
     public:
         JsonParserObjectState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserKeyState : public JsonParserState {
     public:
         JsonParserKeyState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserPostKeyState : public JsonParserState {
     public:
         JsonParserPostKeyState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserObjectValueState : public JsonParserState {
     public:
         JsonParserObjectValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserPostObjectValueState : public JsonParserState {
     public:
         JsonParserPostObjectValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserFinalState : public JsonParserState {
     public:
         JsonParserFinalState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
         virtual bool isTerminalState();
 };
 
 class JsonParserStringValueState : public JsonParserState {
     public:
         JsonParserStringValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserNumericValueState : public JsonParserState {
     public:
         JsonParserNumericValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserDecimalValueState : public JsonParserState {
     public:
         JsonParserDecimalValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserListValueState : public JsonParserState {
     public:
         JsonParserListValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };
 
 class JsonParserPostListValueState : public JsonParserState {
     public:
         JsonParserPostListValueState(JsonParser* parser) : JsonParserState(parser) {};
-        virtual void readCharacter(std::string input, int& index);
+        virtual void readCharacter(std::string input, unsigned int& index);
 };

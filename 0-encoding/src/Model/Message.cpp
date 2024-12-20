@@ -9,7 +9,7 @@ Message::Message(std::vector<MessageField> fields, std::string name, std::unorde
 std::string Message::toString() {
     std::ostringstream os;
     os << "<Message " << name << std::endl;
-    for (int i = 0; i < fields.size(); i++) {
+    for (unsigned int i = 0; i < fields.size(); i++) {
         os << "\t" << fields.at(i).toString() << std::endl;
     }
     os << ">";
@@ -63,7 +63,7 @@ Message MessageBuilder::build() {
     std::unordered_set<int> indexes;
     std::unordered_set<std::string> names;
 
-    for (int i = 0; i < fields.size(); i++) {
+    for (unsigned int i = 0; i < fields.size(); i++) {
         if (indexes.find(fields.at(i).getIndex()) == indexes.end()) {
             indexes.insert(fields.at(i).getIndex());
         }
