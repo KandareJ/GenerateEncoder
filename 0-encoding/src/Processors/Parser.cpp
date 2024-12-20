@@ -13,7 +13,7 @@ Parser::~Parser() {
 }
 
 std::unordered_map<std::string, Message> Parser::parse(std::vector<Token> tokens) {
-    for (int i = 0; i < tokens.size(); i++) {
+    for (unsigned int i = 0; i < tokens.size(); i++) {
         state->handleToken(tokens.at(i));
     }
 
@@ -27,6 +27,10 @@ std::unordered_map<std::string, Message> Parser::parse(std::vector<Token> tokens
 void Parser::changeState(ParserState* newState) {
     delete state;
     state = newState;
+}
+
+ParserState::~ParserState() {
+    
 }
 
 bool ParserState::isTerminalState() {

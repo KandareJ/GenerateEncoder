@@ -37,6 +37,7 @@ std::string CppCodeGenerator::getTypeFromField(MessageField field) {
 
 std::string CppCodeGenerator::generateHeader(Message message) {
     std::ostringstream os;
+    std::unordered_set<std::string> dependencies = message.getDependencies();
 
     os << "#pragma once" << std::endl << std::endl;
     os << "#include <sstream>" << std::endl;
@@ -44,14 +45,13 @@ std::string CppCodeGenerator::generateHeader(Message message) {
     os << "#include <vector>" << std::endl << std::endl;
     os << getIncludeHeaders();
 
-    for (std::unordered_set<std::string>::iterator it = message.getDependencies().begin(); it != message.getDependencies().end(); it++) {
+    for (std::unordered_set<std::string>::iterator it = dependencies.begin(); it != dependencies.end(); it++) {
         os << "#include \"" << *it << ".h\"" << std::endl << std::endl;
     }
 
     os << generateClassHeader(message) << std::endl;
     os << generateClassBuilderHeader(message) << std::endl;
     
-
     return os.str();
 }
 
@@ -71,7 +71,7 @@ std::string CppCodeGenerator::generateClassHeader(Message message) {
     os << "\t\tstd::string encode();" << std::endl;
     os << "\t\tvoid decode(std::string message);" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "\t\tstd::vector<" << getTypeFromField(message.getFields().at(i)) << ">";
         }
@@ -87,7 +87,7 @@ std::string CppCodeGenerator::generateClassHeader(Message message) {
     os << "\t\tfriend class " << StringUtils::capitalize(message.getName()) << "Builder;" << std::endl;
     os << "\t\t"<< StringUtils::capitalize(message.getName()) << "(";
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "std::vector<" << getTypeFromField(message.getFields().at(i)) << ">";
         }
@@ -103,7 +103,7 @@ std::string CppCodeGenerator::generateClassHeader(Message message) {
 
     os << ");" << std::endl;
     
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "\t\tstd::vector<" << getTypeFromField(message.getFields().at(i)) << ">";
         }
@@ -129,13 +129,13 @@ std::string CppCodeGenerator::generateClassBuilderConstructor(Message message) {
 
         std::vector<MessageField> customFields;
         
-        for (int i = 0; i < message.getFields().size(); i++) {
+        for (unsigned int i = 0; i < message.getFields().size(); i++) {
             if (message.getFields().at(i).getType() == FIELD_TYPE_CUSTOM) {
                 customFields.push_back(message.getFields().at(i));
             }
         }
 
-        for (int i = 0; i < customFields.size(); i++) {
+        for (unsigned int i = 0; i < customFields.size(); i++) {
             if (i == 0) {
                 os << " : ";
             }
@@ -163,7 +163,7 @@ std::string CppCodeGenerator::generateClassBuilderHeader(Message message) {
     os << "\t\t" << StringUtils::capitalize(message.getName()) << " build();" << std::endl;
     os << "\t\tvoid clear();" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "\t\t" << className << "* append";
         }
@@ -180,7 +180,7 @@ std::string CppCodeGenerator::generateClassBuilderHeader(Message message) {
 
     os << "\tprivate:" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "\t\tstd::vector<" << getTypeFromField(message.getFields().at(i)) << ">";
         }
@@ -204,7 +204,7 @@ std::string CppCodeGenerator::generateCpp(Message message) {
     os << generateEncode(message) << std::endl;
     os << generateDecode(message) << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         os << generateGetter(message.getFields().at(i), className) << std::endl;
     }
 
@@ -212,7 +212,7 @@ std::string CppCodeGenerator::generateCpp(Message message) {
 
     os << generateBuild(message) << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         os << generateBuilderSetter(message.getFields().at(i), className) << std::endl;
     }
 
@@ -228,7 +228,7 @@ std::string CppCodeGenerator::generateConstructor(Message message) {
     os << StringUtils::capitalize(message.getName()) << "::";
     os << StringUtils::capitalize(message.getName()) << "(";
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "std::vector<" << getTypeFromField(message.getFields().at(i)) << ">";
 
@@ -245,7 +245,7 @@ std::string CppCodeGenerator::generateConstructor(Message message) {
 
     os << ")";
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (i == 0) {
             os << " : ";
         }
@@ -312,7 +312,7 @@ std::string CppCodeGenerator::generateClear(Message message) {
 
     os << "void " << className << "::clear() {" << std::endl;
     
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).isList()) {
             os << "\tthis->" << message.getFields().at(i).getName() << ".clear();" << std::endl;
         }
@@ -346,7 +346,7 @@ std::string CppCodeGenerator::generateEmpty(Message message) {
     os << className << " " << className << "Builder::empty() {" << std::endl;
     os << "\t" << className << "Builder builder;" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         if (message.getFields().at(i).getType() == FIELD_TYPE_CUSTOM) {
             os << "\tbuilder.set" << StringUtils::capitalize(message.getFields().at(i).getName()) << "("<< message.getFields().at(i).getCustomType() << "Builder::empty());" << std::endl;
         }
@@ -365,7 +365,7 @@ std::string CppCodeGenerator::generateBuild(Message message) {
     os << className << " " << className << "Builder::build() {" << std::endl;
     os << "\treturn " << className << "(";
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         os << message.getFields().at(i).getName();
         if (i < message.getFields().size() - 1) {
             os << ", ";

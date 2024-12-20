@@ -18,7 +18,7 @@ void Tokenizer::reset() {
 std::vector<Token> Tokenizer::tokenize(std::string input) {
     reset();
 
-    for (int i = 0; i < input.length(); i++) {
+    for (unsigned int i = 0; i < input.length(); i++) {
         state->readCharacter(input.at(i));
     }
 
@@ -28,6 +28,10 @@ std::vector<Token> Tokenizer::tokenize(std::string input) {
 void Tokenizer::changeState(TokenizerState* newState) {
     delete state;
     state = newState;
+}
+
+TokenizerState::~TokenizerState() {
+    
 }
 
 void TokenizerState::changeState(TokenizerState* newState) {
@@ -64,6 +68,7 @@ void BaseState::readCharacter(char current) {
     switch (current) {
         case ' ':
             break;
+        case 13:
         case '\n':
             incrementLine();
             break;

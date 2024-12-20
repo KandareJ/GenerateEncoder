@@ -17,7 +17,11 @@ OBJECTS = $(SOURCES:$(SRC_DIR)/%.cpp=$(OBJ_DIR)/%.o)
 TARGET = $(BIN_DIR)/GenerateEncoder
 
 # Default target to build
-all: $(TARGET)
+all: $(BIN_DIR) $(TARGET)
+
+# Build bin output directory if not already built
+$(BIN_DIR):
+	@mkdir -p $(BIN_DIR)
 
 # Link the object files to create the final executable
 $(TARGET): $(OBJECTS)

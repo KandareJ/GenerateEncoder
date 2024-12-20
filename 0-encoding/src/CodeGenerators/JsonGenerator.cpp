@@ -13,7 +13,7 @@ std::string JsonGenerator::generateEncode(Message message) {
     os << "\tstd::ostringstream os;" << std::endl << std::endl;
     os << "\tos << \"{\";" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         os << "\tos << \"\\\"" << message.getFields().at(i).getName() << "\\\":\"" << " << ";
         os << generateEncodeField(message.getFields().at(i));
         
@@ -39,7 +39,7 @@ std::string JsonGenerator::generateEncodeField(MessageField field) {
     if (field.isList()) {
         os << "\"[\";" << std::endl;
 
-        os << "\tfor (int i = 0; i < " << field.getName() << ".size(); i++) {" << std::endl;
+        os << "\tfor (unsigned int i = 0; i < " << field.getName() << ".size(); i++) {" << std::endl;
         os << "\t\tos << ";
 
         if (field.getType() == FIELD_TYPE_CUSTOM) {
@@ -116,13 +116,13 @@ std::string JsonGenerator::generateDecode(Message message) {
 
     os << "void " << StringUtils::capitalize(message.getName()) << "::decode(JsonMap* message) {" << std::endl;
 
-    for (int i = 0; i < message.getFields().size(); i++) {
+    for (unsigned int i = 0; i < message.getFields().size(); i++) {
         MessageField field = message.getFields().at(i);
 
         if (field.isList()) {
             os << "\tthis->" << field.getName() << ".clear();" << std::endl;
             os << "\tstd::vector<JsonObject*> " << field.getName() << "Items = ((JsonList*) message->getValue(\"" << field.getName() << "\"))->getList();" << std::endl;
-            os << "\tfor (int i = 0; i < " << field.getName() << "Items.size(); i++) {" << std::endl;
+            os << "\tfor (unsigned int i = 0; i < " << field.getName() << "Items.size(); i++) {" << std::endl;
 
             if (field.getType() == FIELD_TYPE_CUSTOM) {
                 os << "\t\t" << field.getCustomType() << "Builder builder;" << std::endl;
@@ -427,7 +427,7 @@ unsigned int JsonUtils::getPosInCharSet(char character) {
 std::string JsonUtils::encodeBase64(std::string bytes) {
     std::string encoded;
 
-    for (int i = 0; i < bytes.size(); i+=3) {
+    for (unsigned int i = 0; i < bytes.size(); i+=3) {
         encoded.push_back(base64CharSet[(bytes.at(i) & 0xfc) >> 2]);
 
         if (i+1 < bytes.size()) {
@@ -456,7 +456,7 @@ std::string JsonUtils::encodeBase64(std::string bytes) {
 std::string JsonUtils::decodeBase64(std::string base64Bytes) {
     std::string decoded;
 
-    for (int i = 0; i < base64Bytes.length(); i+=4) {
+    for (unsigned int i = 0; i < base64Bytes.length(); i+=4) {
        int char1Pos = getPosInCharSet(base64Bytes.at(i+1) );
        decoded.push_back(static_cast<std::string::value_type>(((getPosInCharSet(base64Bytes.at(i))) << 2) + ((char1Pos & 0x30) >> 4)));
 

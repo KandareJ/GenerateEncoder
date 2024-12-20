@@ -71,7 +71,7 @@ unsigned int JsonUtils::getPosInCharSet(char character) {
 std::string JsonUtils::encodeBase64(std::string bytes) {
     std::string encoded;
 
-    for (int i = 0; i < bytes.size(); i+=3) {
+    for (unsigned int i = 0; i < bytes.size(); i+=3) {
         encoded.push_back(base64CharSet[(bytes.at(i) & 0xfc) >> 2]);
 
         if (i+1 < bytes.size()) {
@@ -100,7 +100,7 @@ std::string JsonUtils::encodeBase64(std::string bytes) {
 std::string JsonUtils::decodeBase64(std::string base64Bytes) {
     std::string decoded;
 
-    for (int i = 0; i < base64Bytes.length(); i+=4) {
+    for (unsigned int i = 0; i < base64Bytes.length(); i+=4) {
        int char1Pos = getPosInCharSet(base64Bytes.at(i+1) );
        decoded.push_back(static_cast<std::string::value_type>(((getPosInCharSet(base64Bytes.at(i))) << 2) + ((char1Pos & 0x30) >> 4)));
 
@@ -117,7 +117,7 @@ std::string JsonUtils::decodeBase64(std::string base64Bytes) {
     return decoded;
 }
 
-JsonParseError::JsonParseError(std::string input, int index) {
+JsonParseError::JsonParseError(std::string input, unsigned int index) {
     std::ostringstream os;
     os << "JsonParseError: Unexpected token " << input.at(index);
     os << " at index " << index << std::endl;
@@ -173,7 +173,7 @@ JsonParser::~JsonParser() {
     delete state;
 }
 
-JsonObject* JsonParser::parse(std::string input, int& index) {
+JsonObject* JsonParser::parse(std::string input, unsigned int& index) {
     while (!state->isTerminalState() && index < input.length()) {
         state->readCharacter(input, index);
     }
@@ -182,7 +182,7 @@ JsonObject* JsonParser::parse(std::string input, int& index) {
 }
 
 JsonObject* JsonParser::parse(std::string input) {
-    int index = 0;
+    unsigned int index = 0;
     return parse(input, index);
 }
 
@@ -197,6 +197,10 @@ void JsonParser::setCurrent(JsonObject* current) {
 
 JsonObject* JsonParser::getCurrent() {
     return current;
+}
+
+JsonParserState::~JsonParserState() {
+    
 }
 
 JsonParserState::JsonParserState(JsonParser* parser) {
@@ -219,7 +223,7 @@ void JsonParserState::changeState(JsonParserState* nextState) {
     parser->changeState(nextState);
 }
 
-void JsonParserInitialState::readCharacter(std::string input, int& index) {
+void JsonParserInitialState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isDigit(input.at(index))) {
         setCurrent(new JsonValue());
         ((JsonValue*) getCurrent())->appendToValue(input.at(index));
@@ -245,7 +249,7 @@ void JsonParserInitialState::readCharacter(std::string input, int& index) {
     index++;
 }
 
-void JsonParserObjectState::readCharacter(std::string input, int& index) {
+void JsonParserObjectState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isWhitespace(input.at(index))) {
     }
     else if (input.at(index) == '\"') {
@@ -257,7 +261,7 @@ void JsonParserObjectState::readCharacter(std::string input, int& index) {
     index++;
 }
 
-void JsonParserKeyState::readCharacter(std::string input, int& index) {
+void JsonParserKeyState::readCharacter(std::string input, unsigned int& index) {
     if (input.at(index) == '\"') {
         changeState(new JsonParserPostKeyState(parser));
     }
@@ -267,7 +271,7 @@ void JsonParserKeyState::readCharacter(std::string input, int& index) {
     index++;
 }
 
-void JsonParserPostKeyState::readCharacter(std::string input, int& index) {
+void JsonParserPostKeyState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isWhitespace(input.at(index))) {
     }
     else if (input.at(index) == ':') {
@@ -279,13 +283,13 @@ void JsonParserPostKeyState::readCharacter(std::string input, int& index) {
     index++;
 }
 
-void JsonParserObjectValueState::readCharacter(std::string input, int& index) {
+void JsonParserObjectValueState::readCharacter(std::string input, unsigned int& index) {
     JsonParser recursiveParser;
     ((JsonMap*) getCurrent())->insert(recursiveParser.parse(input, index));
     changeState(new JsonParserPostObjectValueState(parser));
 }
 
-void JsonParserPostObjectValueState::readCharacter(std::string input, int& index) {
+void JsonParserPostObjectValueState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isWhitespace(input.at(index))) {
 
     }
@@ -301,7 +305,7 @@ void JsonParserPostObjectValueState::readCharacter(std::string input, int& index
     index++;
 }
 
-void JsonParserFinalState::readCharacter(std::string input, int& index) {
+void JsonParserFinalState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isWhitespace(input.at(index))) {
 
     }
@@ -315,7 +319,7 @@ bool JsonParserFinalState::isTerminalState() {
     return true;
 }
 
-void JsonParserStringValueState::readCharacter(std::string input, int& index) {
+void JsonParserStringValueState::readCharacter(std::string input, unsigned int& index) {
     if (input.at(index) == '\"') {
         changeState(new JsonParserFinalState(parser));
     }
@@ -325,7 +329,7 @@ void JsonParserStringValueState::readCharacter(std::string input, int& index) {
     index++;
 }
 
-void JsonParserNumericValueState::readCharacter(std::string input, int& index) {
+void JsonParserNumericValueState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isDigit(input.at(index))) {
         ((JsonValue*) getCurrent())->appendToValue(input.at(index));
         index++;
@@ -340,7 +344,7 @@ void JsonParserNumericValueState::readCharacter(std::string input, int& index) {
     }
 }
 
-void JsonParserDecimalValueState::readCharacter(std::string input, int& index) {
+void JsonParserDecimalValueState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isDigit(input.at(index))) {
         ((JsonValue*) getCurrent())->appendToValue(input.at(index));
         index++;
@@ -350,13 +354,13 @@ void JsonParserDecimalValueState::readCharacter(std::string input, int& index) {
     }
 }
 
-void JsonParserListValueState::readCharacter(std::string input, int& index) {
+void JsonParserListValueState::readCharacter(std::string input, unsigned int& index) {
     JsonParser recursiveParser;
     ((JsonList*) getCurrent())->appendValue(recursiveParser.parse(input, index));
     changeState(new JsonParserPostListValueState(parser));
 }
 
-void JsonParserPostListValueState::readCharacter(std::string input, int& index) {
+void JsonParserPostListValueState::readCharacter(std::string input, unsigned int& index) {
     if (JsonUtils::isWhitespace(input.at(index))) {
 
     }
