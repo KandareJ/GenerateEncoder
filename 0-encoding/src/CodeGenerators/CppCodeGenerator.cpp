@@ -2,8 +2,8 @@
 
 std::vector<OutputFile> CppCodeGenerator::generateCode(std::unordered_map<std::string, Message> messages) {
     std::vector<OutputFile> outputs;
-    outputs.push_back(OutputFile("JsonUtils.h", generateUtilHeader()));
-    outputs.push_back(OutputFile("JsonUtils.cpp", generateUtilCpp()));
+    outputs.push_back(OutputFile(getUtilFileName() + ".h", generateUtilHeader()));
+    outputs.push_back(OutputFile(getUtilFileName() + ".cpp", generateUtilCpp()));
 
     for (std::unordered_map<std::string, Message>::iterator it = messages.begin(); it != messages.end(); it++) {
         std::string fileName = StringUtils::capitalize(it->first);

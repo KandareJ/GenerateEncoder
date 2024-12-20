@@ -16,6 +16,7 @@ class CppCodeGenerator : public CodeGenerator {
         virtual std::string generateAdditionalPublic(Message message);
         virtual std::string generateAdditionalPrivate(Message message);
         std::string generateCpp(Message message);
+        virtual std::string getUtilFileName() = 0;
         virtual std::string generateUtilHeader() = 0;
         virtual std::string generateUtilCpp() = 0;
         virtual std::string getIncludeHeaders() = 0;

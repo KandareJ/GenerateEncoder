@@ -5,8 +5,7 @@ int Program::run(int argc, char** argv) {
         Command command = parseCommand(argc, argv);
         Tokenizer tokenizer;
         Parser parser;
-        CodeGenerator* codeGenerator = new JsonGenerator();
-        // TODO: initialize codeGenerator based on command args
+        CodeGenerator* codeGenerator = initializeCodeGenerator(command);
 
         std::string input = FileUtil::readFile(command.getInputFile());
         std::vector<Token> tokens = tokenizer.tokenize(input);
@@ -24,6 +23,20 @@ int Program::run(int argc, char** argv) {
     } catch (Error e) {
         std::cout << e.getMessage() << std::endl;
         return -1;
+    }
+}
+
+CodeGenerator* Program::initializeCodeGenerator(Command command) {
+    if (command.getOutputLanguage() == "cpp") {
+        if (command.getEncodingType() == "jbuf") {
+            return new JbufGenerator();
+        }
+        else {
+            return new JsonGenerator();
+        }
+    }
+    else {
+        return new JsonGenerator();
     }
 }
 

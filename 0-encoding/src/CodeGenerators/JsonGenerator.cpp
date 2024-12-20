@@ -729,3 +729,7 @@ void JsonParserPostListValueState::readCharacter(std::string input, int& index) 
 }
 )";
 }
+
+std::string JsonGenerator::getUtilFileName() {
+    return "JsonUtils";
+}
