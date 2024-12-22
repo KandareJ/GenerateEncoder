@@ -1,4 +1,4 @@
-#include "./Processors/Program.h"
+#include "Processors/Program.h"
 
 int main(int argc, char** argv) {
     Program program;
