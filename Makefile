@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -Wall -std=c++11 -I../include
 
 # Directories
-SRC_DIR = ../src
+SRC_DIR = ./src
 OBJ_DIR = obj
 BIN_DIR = bin
 
