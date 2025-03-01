@@ -11,15 +11,10 @@
     packages.aarch64-linux.default = nixpkgs.legacyPackages.aarch64-linux.stdenv.mkDerivation {
       name = "GenerateEncoder";
       src = ./.;
-
-      buildPhase = ''
-        ls
-        make
-      '';
-
+      buildPhase = "make";
       installPhase = ''
         mkdir -p $out/bin
-        cp $src/bin/GenerateEncoder.exe $out/bin/
+        cp output/bin/GenerateEncoder $out/bin/
       '';
     };
   };

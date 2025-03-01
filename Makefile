@@ -1,11 +1,11 @@
 # Compiler and flags
 CXX = g++
-CXXFLAGS = -Wall -std=c++11 -I../include
+CXXFLAGS = -Wall -std=c++11 -I./include
 
 # Directories
 SRC_DIR = ./src
-OBJ_DIR = obj
-BIN_DIR = bin
+OBJ_DIR = ./output/obj
+BIN_DIR = ./output/bin
 
 # Source files
 SOURCES = $(wildcard $(SRC_DIR)/**/*.cpp) $(wildcard $(SRC_DIR)/*.cpp)
